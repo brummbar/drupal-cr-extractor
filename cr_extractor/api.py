@@ -55,14 +55,19 @@ def get_json(url: str) -> dict:
 
 
 def iter_pages(start_page: int = 0, page_size: int = PAGE_SIZE) -> Iterator[tuple[int, list[dict], bool]]:
-    """Yield (page_number, records, has_next) for each listing page, newest change first."""
+    """Yield (page_number, records, has_next) for each listing page, newest change first.
+
+    Only the first URL is built locally; subsequent pages follow the `next` link the API
+    returns, so the server owns the paging shape.
+    """
     page = start_page
-    while True:
-        payload = get_json(listing_url(page, page_size))
+    url: str | None = listing_url(page, page_size)
+    while url:
+        payload = get_json(url)
         records = payload.get("list", [])
-        has_next = bool(payload.get("next"))
-        yield page, records, has_next
-        if not has_next:
-            return
+        next_url = payload.get("next") or None
+        yield page, records, bool(next_url)
+        url = next_url
         page += 1
-        time.sleep(PAGE_DELAY_SECONDS)
+        if url:
+            time.sleep(PAGE_DELAY_SECONDS)
