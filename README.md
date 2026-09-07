@@ -4,8 +4,7 @@ Mirrors the Drupal core change records listed at <https://www.drupal.org/list-ch
 into a local cache and renders them to Markdown for a given `MAJOR.MINOR`, **cumulatively**:
 `11.4` produces everything introduced in 11.0, 11.1, 11.2, 11.3 and 11.4.
 
-The listing page sits behind a JavaScript bot challenge, so the tool uses drupal.org's public
-REST API (`/api-d7/node.json?type=changenotice&field_project=3060`) instead. Only published
+The tool uses drupal.org's public REST API (`/api-d7/node.json?type=changenotice&field_project=3060`). Only published
 change records are rendered; drafts are cached but never emitted.
 
 ## Usage (Docker)
